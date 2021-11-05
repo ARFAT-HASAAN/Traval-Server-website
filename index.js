@@ -28,27 +28,53 @@ async function run() {
    try {
       await client.connect();
 
+
+
+
       const database = client.db("travel_service");
-      const servicedata = database.collection("service");
+      const serviceCollection = database.collection("service");
+      const orderCollection = database.collection("BookServices");
+      // post api 
+      app.post('/services', async (req, res) => {
+
+         const newService = req.body;
+         const result = await serviceCollection.insertOne(newService)
+         res.send(result)
+
+
+      })
+
+
 
       // get api 
       app.get('/services', async (req, res) => {
-         const service = await servicedata.find({}).toArray()
+         const service = await serviceCollection.find({}).toArray()
 
 
          res.send(service)
 
       })
 
-      // post api 
-      app.post('/services', async (req, res) => {
 
-         const newService = req.body;
-         const result = await servicedata.insertOne(newService)
+      // order post api 
+      app.post('/orders', async (req, res) => {
+
+         const BookedService = req.body;
+         const result = await orderCollection.insertOne(BookedService)
+         console.log(result)
          res.send(result)
 
 
       })
+
+      app.get('/orders', async (req, res) => {
+         const orderservice = await orderCollection.find({}).toArray()
+
+         res.send(orderservice)
+
+         // res.send('chal ab lag ja')
+      })
+
 
    } finally {
       // await client.close();
