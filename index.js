@@ -34,6 +34,16 @@ async function run() {
       const database = client.db("travel_service");
       const serviceCollection = database.collection("service");
       const orderCollection = database.collection("BookServices");
+
+      // get api 
+      app.get('/services', async (req, res) => {
+         const service = await serviceCollection.find({}).toArray()
+
+
+         res.send(service)
+
+      })
+
       // post api 
       app.post('/services', async (req, res) => {
 
@@ -46,14 +56,7 @@ async function run() {
 
 
 
-      // get api 
-      app.get('/services', async (req, res) => {
-         const service = await serviceCollection.find({}).toArray()
 
-
-         res.send(service)
-
-      })
 
 
       // order post api 
@@ -75,6 +78,18 @@ async function run() {
          // res.send('chal ab lag ja')
       })
 
+      // delete api 
+      app.delete('/orders/:id', async (req, res) => {
+         // console.log(req.params.id)
+         const id = req.params.id
+
+         const query = { _id: id }
+
+         const result = await orderCollection.deleteOne(query);
+         // console.log(result)
+         res.send(result)
+
+      })
 
    } finally {
       // await client.close();
